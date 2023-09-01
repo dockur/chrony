@@ -38,14 +38,14 @@ Pull and run -- it's this simple.
 
 ```
 # pull from docker hub
-$> docker pull dockurr/chronyd
+$> docker pull dockurr/chrony
 
 # run ntp
 $> docker run --name=ntp            \
               --restart=always      \
               --detach              \
               --publish=123:123/udp \
-              dockurr/chronyd
+              dockurr/chrony
 
 # OR run ntp with higher security
 $> docker run --name=ntp                           \
@@ -56,7 +56,7 @@ $> docker run --name=ntp                           \
               --tmpfs=/etc/chrony:rw,mode=1750     \
               --tmpfs=/run/chrony:rw,mode=1750     \
               --tmpfs=/var/lib/chrony:rw,mode=1750 \
-              dockurr/chronyd
+              dockurr/chrony
 ```
 
 ## Configure NTP Servers
