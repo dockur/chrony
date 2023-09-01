@@ -1,11 +1,4 @@
-FROM alpine:3.18
-
-ARG BUILD_DATE
-
-# first, a bit about this container
-LABEL org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.authors="Simon Rupf <simon@rupf.net>" \
-      org.opencontainers.image.documentation=https://github.com/simonrupf/docker-chronyd
+FROM alpine
 
 # default configuration
 ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
@@ -22,6 +15,18 @@ EXPOSE 123/udp
 
 # marking volumes that need to be writable
 VOLUME /etc/chrony /run/chrony /var/lib/chrony
+
+# Container version
+ARG DATE_ARG=""
+ARG BUILD_ARG=0
+ARG VERSION_ARG="0.0"
+ENV VERSION=$VERSION_ARG
+
+LABEL org.opencontainers.image.created=${DATE_ARG}
+LABEL org.opencontainers.image.revision=${BUILD_ARG}
+LABEL org.opencontainers.image.version=${VERSION_ARG}
+LABEL org.opencontainers.image.url=https://hub.docker.com/r/dockurr/chrony/
+LABEL org.opencontainers.image.source=https://github.com/dockur/chrony/
 
 # let docker know how to test container health
 HEALTHCHECK CMD chronyc tracking || exit 1
