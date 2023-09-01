@@ -1,0 +1,18 @@
+on:
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - '**/*.sh'
+
+  pull_request:
+    paths:
+      - '**/*.sh'
+
+name: "Test"
+permissions: {}
+
+jobs:
+  shellcheck:
+    name: Test
+    uses: ./.github/workflows/check.yml
