@@ -1,29 +1,36 @@
-## About this container
+<h1 align="center">chronyd<br />
+<div align="center">
+<img src="https://raw.githubusercontent.com/dockur/chrony/master/assets/logo.jpg" title="Logo" style="max-width:100%;" width="128" />
+</div>
+<div align="center">
+  
+[![Build]][build_url]
+[![Version]][tag_url]
+[![Size]][tag_url]
+[![Pulls]][hub_url]
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/simonrupf/chronyd.svg?logo=docker&label=pulls&style=for-the-badge&color=0099ff&logoColor=ffffff)](https://hub.docker.com/r/simonrupf/chronyd/)
-[![Docker Stars](https://img.shields.io/docker/stars/simonrupf/chronyd.svg?logo=docker&label=stars&style=for-the-badge&color=0099ff&logoColor=ffffff)](https://hub.docker.com/r/simonrupf/chronyd/)
-[![GitHub Stars](https://img.shields.io/github/stars/simonrupf/docker-chronyd.svg?logo=github&label=stars&style=for-the-badge&color=0099ff&logoColor=ffffff)](https://github.com/simonrupf/docker-chronyd)
-[![Apache licensed](https://img.shields.io/badge/license-Apache-blue.svg?logo=apache&style=for-the-badge&color=0099ff&logoColor=ffffff)](https://raw.githubusercontent.com/simonrupf/docker-chronyd/master/LICENSE)
+</div></h1>
 
-This container runs [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https://alpinelinux.org/).
+Docker image of [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https://alpinelinux.org/).
 
 [chrony](https://chrony.tuxfamily.org) is a versatile implementation of the Network Time Protocol (NTP). It can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
 
+## How to use
 
-## Supported Architectures
+### With Docker Compose
 
-Architectures officially supported by this Docker container. Simply pulling this container from [Docker Hub](https://hub.docker.com/r/simonrupf/chronyd/) should retrieve the correct image for your architecture.
-
-![Linux x86-64](https://img.shields.io/badge/linux/amd64-green?style=flat-square)
-![ARMv8 64-bit](https://img.shields.io/badge/linux/arm64-green?style=flat-square)
-![IBM POWER8](https://img.shields.io/badge/linux/ppc64le-green?style=flat-square)
-![IBM Z Systems](https://img.shields.io/badge/linux/s390x-green?style=flat-square)
-![Linux x86/i686](https://img.shields.io/badge/linux/386-green?style=flat-squareg)
-![ARMv7 32-bit](https://img.shields.io/badge/linux/arm/v7-green?style=flat-square)
-![ARMv6 32-bit](https://img.shields.io/badge/linux/arm/v6-green?style=flat-square)
-
-
-## How to Run this container
+```yaml
+version: "3"
+services:
+  ntp:
+    image: dockurr/chrony:latest
+    container_name: ntp
+    ports:
+      - 123:123/udp
+    environment:
+      - NTP_SERVERS=time.cloudflare.com
+      - LOG_LEVEL=0
+```
 
 ### With the Docker CLI
 
@@ -31,14 +38,14 @@ Pull and run -- it's this simple.
 
 ```
 # pull from docker hub
-$> docker pull simonrupf/chronyd
+$> docker pull dockurr/chronyd
 
 # run ntp
 $> docker run --name=ntp            \
               --restart=always      \
               --detach              \
               --publish=123:123/udp \
-              simonrupf/chronyd
+              dockurr/chronyd
 
 # OR run ntp with higher security
 $> docker run --name=ntp                           \
@@ -49,53 +56,8 @@ $> docker run --name=ntp                           \
               --tmpfs=/etc/chrony:rw,mode=1750     \
               --tmpfs=/run/chrony:rw,mode=1750     \
               --tmpfs=/var/lib/chrony:rw,mode=1750 \
-              simonrupf/chronyd
+              dockurr/chronyd
 ```
-
-
-### With Docker Compose
-
-Using the docker-compose.yml file included in this git repo, you can build the container yourself (should you choose to).
-*Note: this docker-compose files uses the `3.9` compose format, which requires Docker Engine release 19.03.0+
-
-```
-# run ntp
-$> docker compose up -d ntp
-
-# (optional) check the ntp logs
-$> docker compose logs ntp
-```
-
-
-### With Docker Swarm
-
-*(These instructions assume you already have a swarm)*
-
-```
-# deploy ntp stack to the swarm
-$> docker stack deploy -c docker-compose.yml chronyd
-
-# check that service is running
-$> docker stack services chronyd
-
-# (optional) view the ntp logs
-$> docker service logs -f chronyd-ntp
-```
-
-
-### From a Local command line
-
-Using the vars file in this git repo, you can update any of the variables to reflect your
-environment. Once updated, simply execute the build then run scripts.
-
-```
-# build ntp
-$> ./build.sh
-
-# run ntp
-$> ./run.sh
-```
-
 
 ## Configure NTP Servers
 
@@ -231,3 +193,12 @@ have priviledge (for good reason) to modify the clock on the system.
 
 Like any host on your network, simply use your preferred ntp client to pull the time from
 the running ntp container on your container host.
+
+[build_url]: https://github.com/dockur/chrony/
+[hub_url]: https://hub.docker.com/r/dockurr/chrony/
+[tag_url]: https://hub.docker.com/r/dockurr/chrony/tags
+
+[Build]: https://github.com/dockur/chrony/actions/workflows/build.yml/badge.svg
+[Size]: https://img.shields.io/docker/image-size/dockurr/chrony/latest?color=066da5&label=size
+[Pulls]: https://img.shields.io/docker/pulls/dockurr/chrony.svg?style=flat&label=pulls&logo=docker
+[Version]: https://img.shields.io/docker/v/dockurr/chrony?arch=amd64&sort=date&color=066da5
