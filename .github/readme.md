@@ -29,7 +29,6 @@ services:
       - 123:123/udp
     environment:
       - NTP_SERVERS=time.cloudflare.com
-      - LOG_LEVEL=0
 ```
 
 ### With the Docker CLI
