@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.18.3
 
 # default configuration
 ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
