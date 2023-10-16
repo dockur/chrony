@@ -22,11 +22,13 @@ ARG BUILD_ARG=0
 ARG VERSION_ARG="0.0"
 ENV VERSION=$VERSION_ARG
 
+LABEL org.opencontainers.image.title=Chrony
 LABEL org.opencontainers.image.created=${DATE_ARG}
 LABEL org.opencontainers.image.revision=${BUILD_ARG}
 LABEL org.opencontainers.image.version=${VERSION_ARG}
 LABEL org.opencontainers.image.url=https://hub.docker.com/r/dockurr/chrony/
 LABEL org.opencontainers.image.source=https://github.com/dockur/chrony/
+LABEL org.opencontainers.image.description=chronyd NTP server
 
 # let docker know how to test container health
 HEALTHCHECK CMD chronyc tracking || exit 1
