@@ -5,7 +5,8 @@ ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
 
 # install chrony
 RUN apk add --no-cache chrony && \
-    rm /etc/chrony/chrony.conf
+    rm /etc/chrony/chrony.conf && \
+    rm -rf /var/cache/apk/*
 
 # script to configure/startup chrony (ntp)
 COPY assets/startup.sh /bin/startup
