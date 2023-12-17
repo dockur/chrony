@@ -4,7 +4,7 @@ FROM alpine:edge
 ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
 
 # install chrony
-RUN apk add --no-cache chrony && \
+RUN apk add --no-cache chrony tzdata && \
     rm /etc/chrony/chrony.conf && \
     rm -rf /var/cache/apk/*
 
@@ -18,7 +18,7 @@ EXPOSE 123/udp
 VOLUME /etc/chrony /run/chrony /var/lib/chrony
 
 # let docker know how to test container health
-HEALTHCHECK CMD chronyc tracking || exit 1
+HEALTHCHECK CMD chronyc -n tracking || exit 1
 
 # start chronyd in the foreground
 ENTRYPOINT [ "/bin/startup" ]
