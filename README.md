@@ -132,6 +132,18 @@ servers.
  * https://www.advtimesync.com/docs/manual/stratum1.html
 
 
+## Chronyd Options
+
+### No Client Log (noclientlog)
+
+This is optional and not enabled by default. If you provide the `NOCLIENTLOG=true` envivonrment variable,
+chrony will be configured to:
+
+> Specifies that client accesses are not to be logged. Normally they are logged, allowing statistics to
+> be reported using the clients command in chronyc. This option also effectively disables server support
+> for the NTP interleaved mode.
+
+
 ## Logging
 
 By default, this project logs informational messages to stdout, which can be helpful when running the
@@ -144,6 +156,58 @@ Feel free to check out the project documentation for more information at:
 
  * https://chrony.tuxfamily.org/doc/4.1/chronyd.html
 
+
+## Setting your timezone
+
+By default the UTC timezone is used, however if you'd like to adjust your NTP server to be running in your
+local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format.
+As an example, using `docker-compose.yaml`, that would look like this if you were located in Vancouver, Canada:
+
+```yaml
+  ...
+  environment:
+    - TZ=America/Vancouver
+    ...
+```
+
+
+## Enable Network Time Security
+
+If **all** the `NTP_SERVERS` you have configured support NTS (Network Time Security) you can pass the `ENABLE_NTS=true`
+option to the container to enable it. As an example, using `docker-compose.yaml`, that would look like this:
+
+```yaml
+  ...
+  environment:
+    - NTP_SERVER=time.cloudflare.com
+    - ENABLE_NTS=true
+    ...
+```
+
+If any of the `NTP_SERVERS` you have configured does not support NTS, you will see a message like the
+following during startup:
+
+> NTS-KE session with 164.67.62.194:4460 (tick.ucla.edu) timed out
+
+
+## Enable control of system clock
+
+This option enables the control of the system clock.
+
+By default, chronyd will not try to make any adjustments of the clock. It will assume the clock is free running
+and still track its offset and frequency relative to the estimated true time. This allows chronyd to run without
+the capability to adjust or set the system clock in order to operate as an NTP server.
+
+Enabling the control requires granting SYS_TIME capability and a container run-time allowing that access:
+
+```yaml
+  ...
+  cap_add:
+    - SYS_TIME
+  environment:
+    - ENABLE_SYSCLK=true
+    ...
+```
 
 ## Testing your NTP Container
 
