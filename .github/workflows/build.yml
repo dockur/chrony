@@ -94,6 +94,7 @@ jobs:
           context: .
           push: true
           provenance: false
+          file: ./Dockerfile.custom
           platforms: linux/amd64,linux/arm64,linux/arm
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
