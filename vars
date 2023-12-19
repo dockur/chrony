@@ -1,0 +1,30 @@
+#
+# this file contains a number of global variables used
+# by the docker container and its scripts. update any
+# of these to be appropriate for your environment.
+#
+
+IMAGE_NAME="simonrupf/chronyd"
+CONTAINER_NAME="ntp"
+
+# (optional) define ntp server(s) to use
+# if none are provided a default is chosen
+# ntp server list must: be comma delimited and NOT contain spaces
+NTP_SERVERS="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
+
+# (optional) enable NTS in the chronyd configuration file
+ENABLE_NTS=false
+
+# (optional) enable control of system clock
+ENABLE_SYSCLK=false
+
+# (optional) turn on noclientlog option
+NOCLIENTLOG=false
+
+# (optional) define chrony log level to use
+# default: 0
+# options: 0 (informational), 1 (warning), 2 (non-fatal error), and 3 (fatal error)
+LOG_LEVEL=0
+
+# (optional) additional docker run options you may want
+DOCKER_OPTS=""
