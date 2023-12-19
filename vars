@@ -4,7 +4,7 @@
 # of these to be appropriate for your environment.
 #
 
-IMAGE_NAME="simonrupf/chronyd"
+IMAGE_NAME="dockurr/chronyd"
 CONTAINER_NAME="ntp"
 
 # (optional) define ntp server(s) to use
