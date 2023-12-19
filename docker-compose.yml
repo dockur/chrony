@@ -3,7 +3,7 @@ version: '3.9'
 services:
   ntp:
     build: .
-    image: simonrupf/chronyd:latest
+    image: dockurr/chrony:latest
     container_name: ntp
     restart: always
     ports:
