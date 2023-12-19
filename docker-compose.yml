@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  ntp:
+    build: .
+    image: simonrupf/chronyd:latest
+    container_name: ntp
+    restart: always
+    ports:
+      - 123:123/udp
+    environment:
+      - NTP_SERVERS=time.cloudflare.com
+      - LOG_LEVEL=0
+#      - TZ=America/Vancouver
+#      - NOCLIENTLOG=true
+#      - ENABLE_NTS=true
+#      - ENABLE_SYSCLK=true
