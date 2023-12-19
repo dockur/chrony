@@ -1,12 +1,18 @@
-FROM alpine:edge
+FROM alpine:3.19
+
+ARG BUILD_DATE
+
+# first, a bit about this container
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.authors="Simon Rupf <simon@rupf.net>" \
+      org.opencontainers.image.documentation=https://github.com/simonrupf/docker-chronyd
 
 # default configuration
 ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
 
 # install chrony
 RUN apk add --no-cache chrony tzdata && \
-    rm /etc/chrony/chrony.conf && \
-    rm -rf /var/cache/apk/*
+    rm /etc/chrony/chrony.conf
 
 # script to configure/startup chrony (ntp)
 COPY assets/startup.sh /bin/startup
