@@ -45,6 +45,7 @@ if [ "$(check_container)" != "" ]; then
   fi
 
   # finally, lets clean up old docker images
+  # shellcheck disable=SC2046
   $DOCKER rmi $($DOCKER images -q ${IMAGE_NAME}) > /dev/null 2>&1
 
 # no docker container found. start a new one.
