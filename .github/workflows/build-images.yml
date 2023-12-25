@@ -24,7 +24,7 @@ jobs:
             --platform linux/amd64,linux/386,${QEMU_PLATFORMS} ."  >> $GITHUB_OUTPUT
           echo "qemu_platforms=${QEMU_PLATFORMS}" >> $GITHUB_OUTPUT
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: ${{ steps.prepare.outputs.qemu_platforms }}
       - name: Set up Docker Buildx
