@@ -28,7 +28,7 @@ services:
     ports:
       - 123:123/udp
     environment:
-      - NTP_SERVERS=time.cloudflare.com
+      - NTP_SERVERS=pool.ntp.org
 ```
 
 ### With the Docker CLI
@@ -86,12 +86,6 @@ NTP_SERVERS="ntp1.aliyun.com,ntp2.aliyun.com,ntp3.aliyun.com,ntp4.aliyun.com"
 # local (offline)
 NTP_SERVERS="127.127.1.1"
 ```
-
-If you're interested in a public list of stratum 1 servers, you can have a look at the following list.
-Do make sure to verify the ntp server is active as this list does appear to have some no longer active
-servers.
-
- * https://www.advtimesync.com/docs/manual/stratum1.html
 
 
 ## Setting your timezone
