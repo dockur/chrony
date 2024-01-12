@@ -58,11 +58,12 @@ $> docker run --name=ntp                           \
               dockurr/chrony
 ```
 
+
 ## Configure NTP Servers
 
 By default, this container uses the [NTP pool's time servers](https://www.ntppool.org/en/). If you'd
 like to use one or more different NTP server(s), you can pass this container an `NTP_SERVERS`
-environment variable. This can be done by updating the [vars](vars), [docker-compose.yml](docker-compose.yml)
+environment variable. This can be done by updating the [docker-compose.yml](https://github.com/dockur/chrony/blob/master/docker-compose.yml)
 files or manually passing `--env=NTP_SERVERS="..."` to `docker run`.
 
 Below are some examples of how to configure common NTP Servers.
@@ -87,13 +88,66 @@ NTP_SERVERS="127.127.1.1"
 ```
 
 If you're interested in a public list of stratum 1 servers, you can have a look at the following list.
-Do make sure to verify the ntp server is active as this list does appaer to have some no longer active
+Do make sure to verify the ntp server is active as this list does appear to have some no longer active
 servers.
 
  * https://www.advtimesync.com/docs/manual/stratum1.html
 
 
-## Logging
+## Setting your timezone
+
+By default the UTC timezone is used, however if you'd like to adjust your NTP server to be running in your
+local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format.
+As an example, using `docker-compose.yaml`, that would look like this if you were located in Vancouver, Canada:
+
+```yaml
+  ...
+  environment:
+    - TZ=America/Vancouver
+    ...
+```
+
+
+## Enable Network Time Security
+
+If **all** the `NTP_SERVERS` you have configured support NTS (Network Time Security) you can pass the `ENABLE_NTS=true`
+option to the container to enable it. As an example, using `docker-compose.yaml`, that would look like this:
+
+```yaml
+  ...
+  environment:
+    - NTP_SERVER=time.cloudflare.com
+    - ENABLE_NTS=true
+    ...
+```
+
+If any of the `NTP_SERVERS` you have configured does not support NTS, you will see a message like the
+following during startup:
+
+> NTS-KE session with 164.67.62.194:4460 (tick.ucla.edu) timed out
+
+
+## Enable control of system clock
+
+This option enables the control of the system clock.
+
+By default, chronyd will not try to make any adjustments of the clock. It will assume the clock is free running
+and still track its offset and frequency relative to the estimated true time. This allows chronyd to run without
+the capability to adjust or set the system clock in order to operate as an NTP server.
+
+Enabling the control requires granting SYS_TIME capability and a container run-time allowing that access:
+
+```yaml
+  ...
+  cap_add:
+    - SYS_TIME
+  environment:
+    - ENABLE_SYSCLK=true
+    ...
+```
+
+
+ ## Logging
 
 By default, this project logs informational messages to stdout, which can be helpful when running the
 ntp service. If you'd like to change the level of log verbosity, pass the `LOG_LEVEL` environment
@@ -104,94 +158,6 @@ the chrony `-L` option, which support the following levels can to specified: 0 (
 Feel free to check out the project documentation for more information at:
 
  * https://chrony.tuxfamily.org/doc/4.1/chronyd.html
-
-
-## Testing your NTP Container
-
-From any machine that has `ntpdate` you can query your new NTP container with the follow
-command:
-
-```
-$> ntpdate -q <DOCKER_HOST_IP>
-```
-
-
-Here is a sample output from my environment:
-
-```
-$> ntpdate -q 10.13.13.9
-server 10.13.1.109, stratum 4, offset 0.000642, delay 0.02805
-14 Mar 19:21:29 ntpdate[26834]: adjust time server 10.13.13.109 offset 0.000642 sec
-```
-
-
-If you see a message, like the following, it's likely the clock is not yet synchronized.
-You should see this go away if you wait a bit longer and query again.
-```
-$> ntpdate -q 10.13.13.9
-server 10.13.13.9, stratum 16, offset 0.005689, delay 0.02837
-11 Dec 09:47:53 ntpdate[26030]: no server suitable for synchronization found
-```
-
-To see details on the ntp status of your container, you can check with the command below
-on your docker host:
-```
-$> docker exec ntp chronyc tracking
-Reference ID    : D8EF2300 (time1.google.com)
-Stratum         : 2
-Ref time (UTC)  : Sun Mar 15 04:33:30 2020
-System time     : 0.000054161 seconds slow of NTP time
-Last offset     : -0.000015060 seconds
-RMS offset      : 0.000206534 seconds
-Frequency       : 5.626 ppm fast
-Residual freq   : -0.001 ppm
-Skew            : 0.118 ppm
-Root delay      : 0.022015510 seconds
-Root dispersion : 0.001476757 seconds
-Update interval : 1025.2 seconds
-Leap status     : Normal
-```
-
-
-Here is how you can see a peer list to verify the state of each ntp source configured:
-```
-$> docker exec ntp chronyc sources
-210 Number of sources = 2
-MS Name/IP address         Stratum Poll Reach LastRx Last sample
-===============================================================================
-^+ time.cloudflare.com           3  10   377   404   -623us[ -623us] +/-   24ms
-^* time1.google.com              1  10   377  1023   +259us[ +244us] +/-   11ms
-```
-
-
-Finally, if you'd like to see statistics about the collected measurements of each ntp
-source configured:
-```
-$> docker exec ntp chronyc sourcestats
-210 Number of sources = 2
-Name/IP Address            NP  NR  Span  Frequency  Freq Skew  Offset  Std Dev
-==============================================================================
-time.cloudflare.com        35  18  139m     +0.014      0.141   -662us   530us
-time1.google.com           33  13  128m     -0.007      0.138   +318us   460us
-```
-
-
-Are you seeing messages like these and wondering what is going on?
-```
-$ docker logs -f ntps
-[...]
-2021-05-25T18:41:40Z System clock wrong by -2.535004 seconds
-2021-05-25T18:41:40Z Could not step system clock
-2021-05-25T18:42:47Z System clock wrong by -2.541034 seconds
-2021-05-25T18:42:47Z Could not step system clock
-```
-
-Good question! Since `chronyd` is running with the `-x` flag, it will not try to control
-the system (container host) clock. This of course is necessary because the process does not
-have priviledge (for good reason) to modify the clock on the system.
-
-Like any host on your network, simply use your preferred ntp client to pull the time from
-the running ntp container on your container host.
 
 [build_url]: https://github.com/dockur/chrony/
 [hub_url]: https://hub.docker.com/r/dockurr/chrony/
