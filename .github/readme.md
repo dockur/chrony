@@ -23,7 +23,7 @@ Docker image of [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https:
 version: "3"
 services:
   ntp:
-    image: dockurr/chrony:latest
+    image: dockurr/chrony
     container_name: ntp
     ports:
       - 123:123/udp
