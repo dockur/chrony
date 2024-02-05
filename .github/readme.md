@@ -153,6 +153,9 @@ Feel free to check out the project documentation for more information at:
 
  * https://chrony.tuxfamily.org/doc/4.1/chronyd.html
 
+## Stars
+[![Stars](https://starchart.cc/dockur/chrony.svg?variant=adaptive)](https://starchart.cc/dockur/chrony)
+
 [build_url]: https://github.com/dockur/chrony/
 [hub_url]: https://hub.docker.com/r/dockurr/chrony/
 [tag_url]: https://hub.docker.com/r/dockurr/chrony/tags
