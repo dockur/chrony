@@ -1,6 +1,6 @@
 <h1 align="center">chronyd<br />
 <div align="center">
-<img src="https://raw.githubusercontent.com/dockur/chrony/master/.github/logo.jpg" title="Logo" style="max-width:100%;" width="128" />
+<a href="https://github.com/dockur/chrony"><img src="https://raw.githubusercontent.com/dockur/chrony/master/.github/logo.jpg" title="Logo" style="max-width:100%;" width="128" /></a>
 </div>
 <div align="center">
   
