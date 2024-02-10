@@ -29,6 +29,7 @@ services:
       - 123:123/udp
     environment:
       - NTP_SERVERS: "pool.ntp.org"
+    restart: on-failure
 ```
 
 ### With the Docker CLI
