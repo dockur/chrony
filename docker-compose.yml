@@ -6,10 +6,10 @@ services:
     ports:
       - 123:123/udp
     environment:
-      - NTP_SERVERS: "pool.ntp.org"
-#      - LOG_LEVEL: 0
-#      - TZ: "America/Vancouver"
-#      - NOCLIENTLOG: "true"
-#      - ENABLE_NTS: "true"
-#      - ENABLE_SYSCLK: "true"
+      NTP_SERVERS: "pool.ntp.org"
+#      LOG_LEVEL: 0
+#      TZ: "America/Vancouver"
+#      NOCLIENTLOG: "true"
+#      ENABLE_NTS: "true"
+#      ENABLE_SYSCLK: "true"
     restart: on-failure
