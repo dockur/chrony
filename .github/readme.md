@@ -28,7 +28,7 @@ services:
     ports:
       - 123:123/udp
     environment:
-      - NTP_SERVERS: "pool.ntp.org"
+      NTP_SERVERS: "pool.ntp.org"
     restart: on-failure
 ```
 
@@ -98,7 +98,7 @@ As an example, using `docker-compose.yaml`, that would look like this if you wer
 ```yaml
   ...
   environment:
-    - TZ: "America/Vancouver"
+    TZ: "America/Vancouver"
     ...
 ```
 
@@ -111,8 +111,8 @@ option to the container to enable it. As an example, using `docker-compose.yaml`
 ```yaml
   ...
   environment:
-    - ENABLE_NTS: "true"
-    - NTP_SERVERS: "time.cloudflare.com"
+    ENABLE_NTS: "true"
+    NTP_SERVERS: "time.cloudflare.com"
     ...
 ```
 
@@ -137,7 +137,7 @@ Enabling the control requires granting SYS_TIME capability and a container run-t
   cap_add:
     - SYS_TIME
   environment:
-    - ENABLE_SYSCLK: "true"
+    ENABLE_SYSCLK: "true"
     ...
 ```
 
