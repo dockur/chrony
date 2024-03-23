@@ -25,10 +25,10 @@ services:
   ntp:
     image: dockurr/chrony
     container_name: ntp
-    ports:
-      - 123:123/udp
     environment:
       NTP_SERVERS: "pool.ntp.org"
+    ports:
+      - 123:123/udp
     restart: on-failure
 ```
 
