@@ -64,7 +64,7 @@ $> docker run --name=ntp                           \
 
 By default, this container uses the [NTP pool's time servers](https://www.ntppool.org/en/). If you'd
 like to use one or more different NTP server(s), you can pass this container an `NTP_SERVERS`
-environment variable. This can be done by updating the [docker-compose.yml](https://github.com/dockur/chrony/blob/master/docker-compose.yml)
+environment variable. This can be done by updating the [compose.yml](https://github.com/dockur/chrony/blob/master/compose.yml)
 files or manually passing `--env=NTP_SERVERS="..."` to `docker run`.
 
 Below are some examples of how to configure common NTP Servers.
