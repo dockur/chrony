@@ -17,7 +17,7 @@ Docker image of [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https:
 
 ## How to use
 
-### With Docker Compose
+Via Docker Compose:
 
 ```yaml
 version: "3"
@@ -32,9 +32,7 @@ services:
     restart: on-failure
 ```
 
-### With the Docker CLI
-
-Pull and run -- it's this simple.
+Via Docker CLI:
 
 ```
 # pull from docker hub
