@@ -20,7 +20,6 @@ Docker image of [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https:
 Via Docker Compose:
 
 ```yaml
-version: "3"
 services:
   ntp:
     image: dockurr/chrony
