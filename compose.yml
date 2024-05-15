@@ -11,4 +11,3 @@ services:
 #      NOCLIENTLOG: "true"
 #      ENABLE_NTS: "true"
 #      ENABLE_SYSCLK: "true"
-    restart: on-failure
