@@ -32,29 +32,9 @@ services:
 
 Via Docker CLI:
 
+```bash
+docker run -it --rm -p 123:123/udp dockurr/chrony
 ```
-# pull from docker hub
-$> docker pull dockurr/chrony
-
-# run ntp
-$> docker run --name=ntp            \
-              --restart=always      \
-              --detach              \
-              --publish=123:123/udp \
-              dockurr/chrony
-
-# OR run ntp with higher security
-$> docker run --name=ntp                           \
-              --restart=always                     \
-              --detach                             \
-              --publish=123:123/udp                \
-              --read-only                          \
-              --tmpfs=/etc/chrony:rw,mode=1750     \
-              --tmpfs=/run/chrony:rw,mode=1750     \
-              --tmpfs=/var/lib/chrony:rw,mode=1750 \
-              dockurr/chrony
-```
-
 
 ## Configure NTP Servers
 
