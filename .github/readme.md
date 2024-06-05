@@ -11,9 +11,9 @@
 
 </div></h1>
 
-Docker image of [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https://alpinelinux.org/).
+Docker container of [chrony](https://chrony.tuxfamily.org/), a versatile implementation of the Network Time Protocol (NTP).
 
-[chrony](https://chrony.tuxfamily.org) is a versatile implementation of the Network Time Protocol (NTP). It can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
+It can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
 
 ## How to use
 
