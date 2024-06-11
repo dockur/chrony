@@ -13,9 +13,12 @@
 
 Docker container of [chrony](https://chrony.tuxfamily.org/), a versatile implementation of the Network Time Protocol (NTP).
 
-It can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
+## Features ✨
 
-## How to use
+  - Synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard.
+  - Operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
+
+## Usage  🐳
 
 Via Docker Compose:
 
@@ -36,7 +39,7 @@ Via Docker CLI:
 docker run -it --rm -p 123:123/udp dockurr/chrony
 ```
 
-## Configure NTP Servers
+## Configuration ⚙️
 
 By default, this container uses the [NTP pool's time servers](https://www.ntppool.org/en/). If you'd
 like to use one or more different NTP server(s), you can pass this container an `NTP_SERVERS`
@@ -64,8 +67,7 @@ NTP_SERVERS="ntp1.aliyun.com,ntp2.aliyun.com,ntp3.aliyun.com,ntp4.aliyun.com"
 NTP_SERVERS="127.127.1.1"
 ```
 
-
-## Setting your timezone
+## Setting your timezone ⏲️
 
 By default the UTC timezone is used, however if you'd like to adjust your NTP server to be running in your
 local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format.
@@ -78,8 +80,7 @@ As an example, using `docker-compose.yaml`, that would look like this if you wer
     ...
 ```
 
-
-## Enable Network Time Security
+## Enable Network Time Security 🛡️
 
 If **all** the `NTP_SERVERS` you have configured support NTS (Network Time Security) you can pass the `ENABLE_NTS=true`
 option to the container to enable it. As an example, using `docker-compose.yaml`, that would look like this:
@@ -97,8 +98,7 @@ following during startup:
 
 > NTS-KE session with 164.67.62.194:4460 (tick.ucla.edu) timed out
 
-
-## Enable control of system clock
+## Enable control of system clock 🖥️
 
 This option enables the control of the system clock.
 
@@ -117,8 +117,7 @@ Enabling the control requires granting SYS_TIME capability and a container run-t
     ...
 ```
 
-
- ## Logging
+ ## Logging 📒
 
 By default, this project logs informational messages to stdout, which can be helpful when running the
 ntp service. If you'd like to change the level of log verbosity, pass the `LOG_LEVEL` environment
@@ -130,7 +129,7 @@ Feel free to check out the project documentation for more information at:
 
  * https://chrony.tuxfamily.org/doc/4.1/chronyd.html
 
-## Stars
+## Stars 🌟
 [![Stars](https://starchart.cc/dockur/chrony.svg?variant=adaptive)](https://starchart.cc/dockur/chrony)
 
 [build_url]: https://github.com/dockur/chrony/
