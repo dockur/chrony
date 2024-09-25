@@ -12,6 +12,15 @@ function check_container() {
 
 # function to start new docker container
 function start_container() {
+  if [ "${ENABLE_PTP:-false}" = true ]; then
+    echo "PTP requested..."
+    if [ -e /dev/ptp0 ]; then
+      echo "PTP device found: /dev/ptp0, passing through..."
+      PTPARG="--device=/dev/ptp0"
+    else
+      echo "PTP device not found: /dev/ptp0"
+    fi
+  fi
   $DOCKER run --name=${CONTAINER_NAME}             \
               --detach=true                        \
               --restart=always                     \
@@ -26,6 +35,7 @@ function start_container() {
               --tmpfs=/etc/chrony:rw,mode=1750     \
               --tmpfs=/run/chrony:rw,mode=1750     \
               --tmpfs=/var/lib/chrony:rw,mode=1750 \
+              ${PTPARG} \
               ${DOCKER_OPTS}                       \
               ${IMAGE_NAME}:latest > /dev/null
 }

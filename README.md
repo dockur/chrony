@@ -5,9 +5,9 @@
 [![GitHub Stars](https://img.shields.io/github/stars/simonrupf/docker-chronyd.svg?logo=github&label=stars&style=for-the-badge&color=0099ff&logoColor=ffffff)](https://github.com/simonrupf/docker-chronyd)
 [![Apache licensed](https://img.shields.io/badge/license-Apache-blue.svg?logo=apache&style=for-the-badge&color=0099ff&logoColor=ffffff)](https://raw.githubusercontent.com/simonrupf/docker-chronyd/master/LICENSE)
 
-This container runs [chrony](https://chrony.tuxfamily.org/) on [Alpine Linux](https://alpinelinux.org/).
+This container runs [chrony](https://chrony-project.org/) on [Alpine Linux](https://alpinelinux.org/).
 
-[chrony](https://chrony.tuxfamily.org) is a versatile implementation of the Network Time Protocol (NTP). It can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
+[chrony](https://chrony-project.org/) is a versatile implementation of the Network Time Protocol (NTP). It can synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard. It can also operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
 
 
 ## Supported Architectures
@@ -125,12 +125,15 @@ NTP_SERVERS="ntp1.aliyun.com,ntp2.aliyun.com,ntp3.aliyun.com,ntp4.aliyun.com"
 NTP_SERVERS="127.127.1.1"
 ```
 
-If you're interested in a public list of stratum 1 servers, you can have a look at the following list.
-Do make sure to verify the ntp server is active as this list does appaer to have some no longer active
-servers.
+If you're interested in a public list of stratum 1 servers, you can have a look at the following lists.
 
- * https://www.advtimesync.com/docs/manual/stratum1.html
+ * https://www.advtimesync.com/docs/manual/stratum1.html (Do make sure to verify the ntp server is active
+   as this list does appaer to have some no longer active servers.)
+ * https://support.ntp.org/Servers/StratumOneTimeServers
 
+It can also be the case that your use-case does not require a stratum 1 server -- most use-cases don't!
+
+ * https://support.ntp.org/Servers/StratumTwoTimeServers
 
 ## Chronyd Options
 
@@ -154,7 +157,7 @@ the chrony `-L` option, which support the following levels can to specified: 0 (
 
 Feel free to check out the project documentation for more information at:
 
- * https://chrony.tuxfamily.org/doc/4.1/chronyd.html
+ * https://chrony-project.org/documentation.html
 
 
 ## Setting your timezone
@@ -208,6 +211,28 @@ Enabling the control requires granting SYS_TIME capability and a container run-t
     - ENABLE_SYSCLK=true
     ...
 ```
+
+## Enable the use of a PTP clock
+
+If you have a `/dev/ptp0`, either a real hardware clock or virtual one provided by a VM host
+you can enable the use of it by passing the device to the container. As an example,
+using `docker-compose.yaml`, that would look like this:
+
+```yaml
+  ...
+  devices:
+    - /dev/ptp0:/dev/ptp0
+```
+
+This will allow chronyd to use the PTP clock as a reference clock. A virtual clock simply provides
+the host's system time with great precision and stability; whether that time is accurate depends
+on the host provider. In our experience, some VPS vendors give pretty good time (off by
+milliseconds), while others are off by seconds.
+
+For information on configuring the host to have a virtual PTP clock, see the following:
+
+ * https://opensource.com/article/17/6/timekeeping-linux-vms
+
 
 ## Testing your NTP Container
 

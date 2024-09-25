@@ -65,6 +65,11 @@ for N in $NTP_SERVERS; do
   fi
 done
 
+# PTP0 configuration: if it has been passed through, it means we want to use it
+if [ -e /dev/ptp0 ]; then
+  echo "refclock PHC /dev/ptp0 poll 3 dpoll -2 stratum 2" >> ${CHRONY_CONF_FILE}
+fi
+
 # final bits for the config file
 {
   echo

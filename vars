@@ -28,3 +28,6 @@ LOG_LEVEL=0
 
 # (optional) additional docker run options you may want
 DOCKER_OPTS=""
+
+# (optional) ask run.sh to pass /dev/ptp0
+RENABLE_PTP=false
