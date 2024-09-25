@@ -12,7 +12,7 @@
 
 </div></h1>
 
-Docker container of [chrony](https://chrony.tuxfamily.org/), a versatile implementation of the Network Time Protocol (NTP).
+Docker container of [chrony](https://chrony-project.org/), a versatile implementation of the Network Time Protocol (NTP).
 
 ## Features ✨
 
@@ -128,7 +128,7 @@ the chrony `-L` option, which support the following levels can to specified: 0 (
 
 Feel free to check out the project documentation for more information at:
 
- * https://chrony.tuxfamily.org/doc/4.1/chronyd.html
+ * https://chrony-project.org/documentation.html
 
 ## Stars 🌟
 [![Stars](https://starchart.cc/dockur/chrony.svg?variant=adaptive)](https://starchart.cc/dockur/chrony)
