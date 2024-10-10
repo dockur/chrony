@@ -16,10 +16,14 @@ function start_container() {
     echo "PTP requested..."
     if [ -e /dev/ptp0 ]; then
       echo "PTP device found: /dev/ptp0, passing through..."
-      PTPARG="--device=/dev/ptp0"
+      DOCKER_OPTS="${DOCKER_OPTS} --device=/dev/ptp0"
     else
       echo "PTP device not found: /dev/ptp0"
     fi
+  fi
+  if [ "${ENABLE_SYSCLK:-false}" = true ]; then
+    echo "SYSCLK requested, adding SYS_TIME capability..."
+    DOCKER_OPTS="${DOCKER_OPTS} --cap-add=SYS_TIME"
   fi
   $DOCKER run --name=${CONTAINER_NAME}             \
               --detach=true                        \
@@ -30,12 +34,10 @@ function start_container() {
               --env=ENABLE_SYSCLK=${ENABLE_SYSCLK} \
               --env=NOCLIENTLOG=${NOCLIENTLOG}     \
               --env=LOG_LEVEL=${LOG_LEVEL}         \
-              --cap-add=SYS_TIME                   \
               --read-only=true                     \
               --tmpfs=/etc/chrony:rw,mode=1750     \
               --tmpfs=/run/chrony:rw,mode=1750     \
               --tmpfs=/var/lib/chrony:rw,mode=1750 \
-              ${PTPARG} \
               ${DOCKER_OPTS}                       \
               ${IMAGE_NAME}:latest > /dev/null
 }
