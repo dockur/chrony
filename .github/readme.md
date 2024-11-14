@@ -130,6 +130,10 @@ Feel free to check out the project documentation for more information at:
 
  * https://chrony-project.org/documentation.html
 
+ # Acknowledgements 🙏
+ 
+Special thanks to [@simonrupf](https://github.com/simonrupf).
+
 ## Stars 🌟
 [![Stars](https://starchart.cc/dockur/chrony.svg?variant=adaptive)](https://starchart.cc/dockur/chrony)
 
