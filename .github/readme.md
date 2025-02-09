@@ -32,6 +32,7 @@ services:
       NTP_SERVERS: "pool.ntp.org"
     ports:
       - 123:123/udp
+    restart: always
 ```
 
 Via Docker CLI:
