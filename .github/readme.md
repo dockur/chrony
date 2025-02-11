@@ -133,7 +133,7 @@ Feel free to check out the project documentation for more information at:
 
  # Acknowledgements 🙏
  
-Special thanks to [@simonrupf](https://github.com/simonrupf).
+Special thanks to [@simonrupf](https://github.com/simonrupf) for creating the original project.
 
 ## Stars 🌟
 [![Stars](https://starchart.cc/dockur/chrony.svg?variant=adaptive)](https://starchart.cc/dockur/chrony)
