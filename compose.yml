@@ -2,8 +2,6 @@ services:
   ntp:
     image: dockurr/chrony
     container_name: ntp
-    ports:
-      - 123:123/udp
     environment:
       NTP_SERVERS: "pool.ntp.org"
 #      LOG_LEVEL: 0
@@ -11,3 +9,6 @@ services:
 #      NOCLIENTLOG: "true"
 #      ENABLE_NTS: "true"
 #      ENABLE_SYSCLK: "true"
+    ports:
+      - 123:123/udp
+    restart: always
