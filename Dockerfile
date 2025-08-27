@@ -11,7 +11,7 @@ RUN apk add --no-cache chrony tzdata && \
     rm -rf /var/cache/apk/*
 
 # script to configure/startup chrony (ntp)
-COPY assets/startup.sh /bin/startup
+COPY --chmod=0755 assets/startup.sh /bin/startup
 
 # ntp port
 EXPOSE 123/udp
