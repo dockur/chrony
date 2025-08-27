@@ -4,11 +4,13 @@ on:
       - master
     paths:
       - '**/*.sh'
+      - 'Dockerfile'
       - 'Dockerfile.custom'
 
   pull_request:
     paths:
       - '**/*.sh'
+      - 'Dockerfile'
       - 'Dockerfile.custom'
 
 name: "Test"
