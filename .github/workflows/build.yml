@@ -54,7 +54,7 @@ jobs:
       - 
         name: Lint Dockerfile
         if: env.exists == 'false'
-        uses: hadolint/hadolint-action@v3.2.0
+        uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: Dockerfile
           ignore: DL3008,DL3018
