@@ -38,7 +38,7 @@ services:
 ##### Via Docker CLI:
 
 ```bash
-docker run -it --rm --name chrony -p 123:123/udp dockurr/chrony
+docker run -it --rm --name chrony -p 123:123/udp docker.io/dockurr/chrony
 ```
 
 ## Configuration ⚙️
