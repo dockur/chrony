@@ -13,7 +13,7 @@ RUN set -eu && \
     chrony \
     tzdata && \
     rm /etc/chrony/chrony.conf && \
-    rm -rf /var/cache/apk/*
+    rm -rf /tmp/* /var/cache/apk/*
 
 # script to configure/startup chrony (ntp)
 COPY --chmod=0755 assets/startup.sh /bin/startup
