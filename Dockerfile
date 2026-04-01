@@ -6,7 +6,12 @@ FROM alpine:edge
 ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
 
 # install chrony
-RUN apk add --no-cache chrony tzdata && \
+RUN set -eu && \
+    apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+    chrony \
+    tzdata && \
     rm /etc/chrony/chrony.conf && \
     rm -rf /var/cache/apk/*
 
