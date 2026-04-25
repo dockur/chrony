@@ -11,6 +11,7 @@ RUN set -eu && \
     apk upgrade && \
     apk add --no-cache \
     chrony \
+    chrony-nts \
     tzdata && \
     rm /etc/chrony/chrony.conf && \
     rm -rf /tmp/* /var/cache/apk/*
