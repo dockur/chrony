@@ -10,9 +10,10 @@ RUN set -eu && \
     apk update && \
     apk upgrade && \
     apk add --no-cache \
-    chrony \
     chrony-nts \
     tzdata && \
+    addgroup -S chrony && \
+    adduser -S chrony -G chrony && \
     rm /etc/chrony/chrony.conf && \
     rm -rf /tmp/* /var/cache/apk/*
 
