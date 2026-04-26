@@ -17,6 +17,10 @@ if [ -d /var/lib/chrony ]; then
   chown -R chrony:chrony /var/lib/chrony
 fi
 
+rm -f "$CHRONY_CONF_FILE"
+touch "$CHRONY_CONF_FILE"
+chown chrony:chrony "$CHRONY_CONF_FILE"
+
 ## dynamically populate chrony config file.
 {
   echo "# https://github.com/dockur/chrony"
@@ -25,8 +29,7 @@ fi
   echo "# located at $0"
   echo
   echo "# time servers provided by NTP_SERVERS environment variables."
-} > ${CHRONY_CONF_FILE}
-
+} >> ${CHRONY_CONF_FILE}
 
 # NTP_SERVERS environment variable is not present, so populate with default server
 if [ -z "${NTP_SERVERS:-}" ]; then
