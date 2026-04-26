@@ -30,5 +30,4 @@ VOLUME /etc/chrony /run/chrony /var/lib/chrony
 HEALTHCHECK CMD chronyc -n tracking || exit 1
 
 # start chronyd in the foreground
-USER chrony:chrony
 ENTRYPOINT [ "/bin/startup" ]
