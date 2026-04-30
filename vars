@@ -30,4 +30,4 @@ LOG_LEVEL=0
 DOCKER_OPTS=""
 
 # (optional) ask run.sh to pass /dev/ptp0
-RENABLE_PTP=false
+ENABLE_PTP=false
