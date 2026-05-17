@@ -48,8 +48,8 @@ else
   fi
 fi
 
-IFS=","
-for N in $NTP_SERVERS; do
+printf "%s" "$NTP_SERVERS" | tr ',' '\n' | while IFS= read -r N; do
+
   # strip any quotes found before or after ntp server
   N_CLEANED=$(printf "%s" "$N" | tr -d '"')
 
@@ -67,6 +67,7 @@ for N in $NTP_SERVERS; do
       echo "server ${N_CLEANED} iburst" >> ${CHRONY_CONF_FILE}
     fi
   fi
+
 done
 
 # PTP0 configuration: if it has been passed through, it means we want to use it
