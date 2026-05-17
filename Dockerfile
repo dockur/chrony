@@ -18,7 +18,7 @@ RUN set -eu && \
     rm -rf /tmp/* /var/cache/apk/*
 
 # script to configure/startup chrony (ntp)
-COPY --chmod=0755 assets/startup.sh /bin/startup
+COPY --chmod=0755 entrypoint.sh /entrypoint.sh
 
 # ntp port
 EXPOSE 123/udp
@@ -30,4 +30,4 @@ VOLUME /etc/chrony /run/chrony /var/lib/chrony
 HEALTHCHECK CMD chronyc -n tracking || exit 1
 
 # start chronyd in the foreground
-ENTRYPOINT [ "/bin/startup" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
