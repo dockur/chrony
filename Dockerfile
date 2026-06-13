@@ -10,11 +10,11 @@ RUN set -eu && \
     apk update && \
     apk upgrade && \
     apk add --no-cache \
-    chrony-nts \
-    tzdata && \
-    addgroup -S chrony && \
-    adduser -S chrony -G chrony && \
-    rm /etc/chrony/chrony.conf && \
+      chrony-nts \
+      tzdata && \
+    { getent group chrony >/dev/null || addgroup -S chrony; } && \
+    { id -u chrony >/dev/null 2>&1 || adduser -S chrony -G chrony; } && \
+    rm -f /etc/chrony/chrony.conf && \
     rm -rf /tmp/* /var/cache/apk/*
 
 # script to configure/startup chrony (ntp)
