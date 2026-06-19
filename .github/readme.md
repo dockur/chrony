@@ -73,7 +73,7 @@ NTP_SERVERS="127.127.1.1"
 
 By default the UTC timezone is used, however if you'd like to adjust your NTP server to be running in your
 local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format.
-As an example, using `docker-compose.yaml`, that would look like this if you were located in Vancouver, Canada:
+As an example, using [compose.yml](https://github.com/dockur/chrony/blob/master/compose.yml), that would look like this if you were located in Vancouver, Canada:
 
 ```yaml
   ...
@@ -85,7 +85,7 @@ As an example, using `docker-compose.yaml`, that would look like this if you wer
 ## Enable Network Time Security 🛡️
 
 If **all** the `NTP_SERVERS` you have configured support NTS (Network Time Security) you can pass the `ENABLE_NTS=true`
-option to the container to enable it. As an example, using `docker-compose.yaml`, that would look like this:
+option to the container to enable it. As an example, using [compose.yml](https://github.com/dockur/chrony/blob/master/compose.yml), that would look like this:
 
 ```yaml
   ...
