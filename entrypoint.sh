@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -eu
 
-DEFAULT_NTP="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 CHRONY_CONF_FILE="/etc/chrony/chrony.conf"
+DEFAULT_NTP="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 
 # Confirm correct permissions on chrony run directory
 if [ -d /run/chrony ]; then
@@ -95,7 +95,7 @@ fi
   echo "makestep 0.1 3"
 
   if [ -n "${NTP_DIRECTIVES:-}" ]; then
-    printf "%s\n" "$NTP_DIRECTIVES"
+    printf "%b\n" "$NTP_DIRECTIVES"
   fi
 
   if [ "${NOCLIENTLOG:-false}" = true ]; then
