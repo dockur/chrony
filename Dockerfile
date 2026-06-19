@@ -11,7 +11,7 @@ RUN set -eu && \
     apk upgrade && \
     apk add --no-cache \
       chrony-nts \
-      bash && \
+      bash \
       tzdata && \
     { getent group chrony >/dev/null || addgroup -S chrony; } && \
     { id -u chrony >/dev/null 2>&1 || adduser -S chrony -G chrony; } && \
