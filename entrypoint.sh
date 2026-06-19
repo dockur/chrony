@@ -50,7 +50,7 @@ fi
 
 # Add NTP servers
 {
-  printf "%s" "$NTP_SERVERS" | tr ',' '\n' | while IFS= read -r N; do
+  printf "%s\n" "$NTP_SERVERS" | tr ',' '\n' | while IFS= read -r N; do
 
     # Strip quotes and surrounding whitespace from ntp server
     N_CLEANED=$(
