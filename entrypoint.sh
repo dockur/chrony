@@ -7,10 +7,11 @@ CHRONY_CONF_FILE="/etc/chrony/chrony.conf"
 # Confirm correct permissions on chrony run directory
 if [ -d /run/chrony ]; then
   chown -R chrony:chrony /run/chrony
-  chmod o-rx /run/chrony
-  # Remove previous pid file if it exist
-  rm -f /var/run/chrony/chronyd.pid
+  chmod 0750 /run/chrony
 fi
+
+# Remove previous pid file if it exists
+rm -f /run/chrony/chronyd.pid /var/run/chrony/chronyd.pid
 
 # Confirm correct permissions on chrony variable state directory
 if [ -d /var/lib/chrony ]; then
@@ -53,25 +54,31 @@ fi
   printf "%s" "$NTP_SERVERS" | tr ',' '\n' | while IFS= read -r N; do
 
     # Strip quotes and surrounding whitespace from ntp server
-    N_CLEANED=$(printf "%s" "$N" | tr -d '"' | xargs)
+    N_CLEANED=$(
+      printf "%s" "$N" |
+        tr -d '"' |
+        sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+    )
 
     # Skip empty entries
     [ -z "$N_CLEANED" ] && continue
 
     # Check if ntp server has a 127.0.0.0/8 address indicating it's
     # the local system clock
-    if echo "$N_CLEANED" | grep -q '^127\.'; then
-      echo "server $N_CLEANED"
-      echo "local stratum 10"
+    case "$N_CLEANED" in
+      127.*)
+        echo "server $N_CLEANED"
+        echo "local stratum 10"
+        ;;
 
-    # Found external time servers
-    else
-      if [ "${ENABLE_NTS:-false}" = true ]; then
-        echo "server $N_CLEANED iburst nts"
-      else
-        echo "server $N_CLEANED iburst"
-      fi
-    fi
+      *)
+        if [ "${ENABLE_NTS:-false}" = true ]; then
+          echo "server $N_CLEANED iburst nts"
+        else
+          echo "server $N_CLEANED iburst"
+        fi
+        ;;
+    esac
 
   done
 } >> "$CHRONY_CONF_FILE"
@@ -88,7 +95,7 @@ fi
   echo "makestep 0.1 3"
 
   if [ -n "${NTP_DIRECTIVES:-}" ]; then
-    printf "%b\n" "$NTP_DIRECTIVES"
+    printf "%s\n" "$NTP_DIRECTIVES"
   fi
 
   if [ "${NOCLIENTLOG:-false}" = true ]; then
@@ -111,9 +118,9 @@ if [ "${ENABLE_SYSCLK:-false}" != true ]; then
   args+=(-x)
 fi
 
-if [[ ! -f /proc/net/if_inet6 ]] || [[ "$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6 2>/dev/null)" == "1" ]]; then
+if [ ! -f /proc/net/if_inet6 ] || [ "$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6 2>/dev/null || echo 0)" = "1" ]; then
   args+=(-4)
 fi
 
-## Startup chronyd in the foreground
+# Startup chronyd in the foreground
 exec /usr/sbin/chronyd "${args[@]}"
