@@ -4,15 +4,15 @@ set -eu
 DEFAULT_NTP="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 CHRONY_CONF_FILE="/etc/chrony/chrony.conf"
 
-# confirm correct permissions on chrony run directory
+# Confirm correct permissions on chrony run directory
 if [ -d /run/chrony ]; then
   chown -R chrony:chrony /run/chrony
   chmod o-rx /run/chrony
-  # remove previous pid file if it exist
+  # Remove previous pid file if it exist
   rm -f /var/run/chrony/chronyd.pid
 fi
 
-# confirm correct permissions on chrony variable state directory
+# Confirm correct permissions on chrony variable state directory
 if [ -d /var/lib/chrony ]; then
   chown -R chrony:chrony /var/lib/chrony
 fi
@@ -21,7 +21,7 @@ rm -f "$CHRONY_CONF_FILE"
 touch "$CHRONY_CONF_FILE"
 chown chrony:chrony "$CHRONY_CONF_FILE"
 
-## dynamically populate chrony config file.
+## Dynamically populate chrony config file.
 {
   echo "# https://github.com/dockur/chrony"
   echo
@@ -41,25 +41,25 @@ fi
 if [ -z "${LOG_LEVEL:-}" ]; then
   LOG_LEVEL=0
 else
-  # confirm log level is between 0-3, since these are the only log levels supported
+  # Confirm log level is between 0-3, since these are the only log levels supported
   if expr "${LOG_LEVEL}" : "[^0123]" > /dev/null; then
-    # level outside of supported range, let's set to default (0)
+    # Level outside of supported range, let's set to default (0)
     LOG_LEVEL=0
   fi
 fi
 
 printf "%s" "$NTP_SERVERS" | tr ',' '\n' | while IFS= read -r N; do
 
-  # strip any quotes found before or after ntp server
+  # Strip any quotes found before or after ntp server
   N_CLEANED=$(printf "%s" "$N" | tr -d '"')
 
-  # check if ntp server has a 127.0.0.0/8 address (RFC3330) indicating it's
+  # Check if ntp server has a 127.0.0.0/8 address (RFC3330) indicating it's
   # the local system clock
   if echo "${N_CLEANED}" | grep -q '^127\.'; then
     echo "server ${N_CLEANED}" >> ${CHRONY_CONF_FILE}
     echo "local stratum 10"    >> ${CHRONY_CONF_FILE}
 
-  # found external time servers
+  # Found external time servers
   else
     if [ "${ENABLE_NTS:-false}" = true ]; then
       echo "server ${N_CLEANED} iburst nts" >> ${CHRONY_CONF_FILE}
@@ -75,7 +75,7 @@ if [ -e /dev/ptp0 ]; then
   echo "refclock PHC /dev/ptp0 poll 3 dpoll -2 stratum 2" >> ${CHRONY_CONF_FILE}
 fi
 
-# final bits for the config file
+# Final bits for the config file
 {
   echo
   echo "driftfile /var/lib/chrony/chrony.drift"
@@ -90,11 +90,21 @@ fi
   echo "allow all"
 } >> ${CHRONY_CONF_FILE}
 
-# enable control of system clock, disabled by default
-SYSCLK="-x"
-if [ "${ENABLE_SYSCLK:-false}" = true ]; then
-  SYSCLK=""
+args=(
+  -U
+  -u chrony
+  -d
+  -L "$LOG_LEVEL"
+)
+
+# Enable control of system clock, disabled by default
+if [ "${ENABLE_SYSCLK:-false}" != true ]; then
+  args+=(-x)
 fi
 
-## startup chronyd in the foreground
-exec /usr/sbin/chronyd -U -u chrony -d ${SYSCLK} -L ${LOG_LEVEL}
+if [[ ! -f /proc/net/if_inet6 ]] || [[ "$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6 2>/dev/null)" == "1" ]]; then
+  args+=(-4)
+fi
+
+## Startup chronyd in the foreground
+exec /usr/sbin/chronyd "${args[@]}"
