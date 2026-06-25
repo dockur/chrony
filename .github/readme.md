@@ -136,7 +136,7 @@ Feel free to check out the project documentation for more information at:
 Special thanks to [@simonrupf](https://github.com/simonrupf) for creating the original project.
 
 ## Stars 🌟
-[![Stars](https://starchart.cc/dockur/chrony.svg?variant=adaptive)](https://starchart.cc/dockur/chrony)
+[![Stargazers](https://raw.githubusercontent.com/star-stats/stars/refs/heads/data/charts/dockur-chrony.svg)](https://github.com/dockur/chrony/stargazers)
 
 [build_url]: https://github.com/dockur/chrony/
 [hub_url]: https://hub.docker.com/r/dockurr/chrony/
