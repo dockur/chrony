@@ -2,10 +2,7 @@
 
 FROM alpine:edge
 
-# default configuration
-ENV NTP_DIRECTIVES="ratelimit\nrtcsync"
-
-# install chrony
+# Install chrony
 RUN set -eu && \
     apk update && \
     apk upgrade && \
@@ -18,17 +15,20 @@ RUN set -eu && \
     rm -f /etc/chrony/chrony.conf && \
     rm -rf /tmp/* /var/cache/apk/*
 
-# script to configure/startup chrony (ntp)
+# Script to configure/startup Chrony
 COPY --chmod=0755 entrypoint.sh /entrypoint.sh
 
-# ntp port
+# NTP port
 EXPOSE 123/udp
 
-# marking volumes that need to be writable
+# Default configuration
+ENV NTP_DIRECTIVES="ratelimit,rtcsync"
+
+# Mark volumes that need to be writable
 VOLUME /etc/chrony /run/chrony /var/lib/chrony
 
-# let docker know how to test container health
+# Let Docker know how to test container health
 HEALTHCHECK CMD chronyc -n tracking || exit 1
 
-# start chronyd in the foreground
+# Start chronyd in the foreground
 ENTRYPOINT [ "/entrypoint.sh" ]
