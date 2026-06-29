@@ -43,37 +43,40 @@ docker run -it --rm --name chrony -p 123:123/udp docker.io/dockurr/chrony
 
 ## Configuration ⚙️
 
-By default, this container uses the [NTP pool's time servers](https://www.ntppool.org/en/). If you'd
-like to use one or more different NTP server(s), you can pass this container an `NTP_SERVERS`
-environment variable. This can be done by updating the [compose.yml](https://github.com/dockur/chrony/blob/master/compose.yml)
-files or manually passing `--env=NTP_SERVERS="..."` to `docker run`.
+By default, this container uses the [NTP pool's time servers](https://www.ntppool.org/en/).
+
+If you'd like to use different NTP servers, you can add the `NTP_SERVERS`
+environment variable. 
 
 Below are some examples of how to configure common NTP Servers.
-
-Do note, to configure more than one server, you must use a comma delimited list WITHOUT spaces.
 
 ```
 # (default) NTP pool
 NTP_SERVERS="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 
-# cloudflare
+# Cloudflare
 NTP_SERVERS="time.cloudflare.com"
 
-# google
+# Google
 NTP_SERVERS="time1.google.com,time2.google.com,time3.google.com,time4.google.com"
 
-# alibaba
+# Alibaba
 NTP_SERVERS="ntp1.aliyun.com,ntp2.aliyun.com,ntp3.aliyun.com,ntp4.aliyun.com"
+```
 
-# local (offline)
-NTP_SERVERS="127.127.1.1"
+By default the container adds only the `ratelimit` and `rtcsync` options to the `chrony.conf` configuration file, you can override those by specifying your own options via the `NTP_DIRECTIVES` variable, for example:
+
+```yaml
+...
+environment:
+  NTP_DIRECTIVES: "ratelimit,rtcsync,clientloglimit 100000000"
+  ...
 ```
 
 ## Setting your timezone ⏲️
 
 By default the UTC timezone is used, however if you'd like to adjust your NTP server to be running in your
-local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format.
-As an example, using [compose.yml](https://github.com/dockur/chrony/blob/master/compose.yml), that would look like this if you were located in Vancouver, Canada:
+local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format:
 
 ```yaml
   ...
@@ -85,7 +88,7 @@ As an example, using [compose.yml](https://github.com/dockur/chrony/blob/master/
 ## Enable Network Time Security 🛡️
 
 If **all** the `NTP_SERVERS` you have configured support NTS (Network Time Security) you can pass the `ENABLE_NTS=true`
-option to the container to enable it. As an example, using [compose.yml](https://github.com/dockur/chrony/blob/master/compose.yml), that would look like this:
+option to the container to enable it:
 
 ```yaml
   ...
