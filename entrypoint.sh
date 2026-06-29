@@ -95,9 +95,10 @@ fi
 
   if [ -n "${NTP_DIRECTIVES:-}" ]; then
     if [ "${NOCLIENTLOG:-false}" = true ]; then
-      printf "%b\n" "$NTP_DIRECTIVES" | grep -vE '^[[:space:]]*ratelimit([[:space:]]|$)' || true
+      printf "%b\n" "$NTP_DIRECTIVES" | tr ',' '\n' |
+        grep -vE '^[[:space:]]*ratelimit([[:space:]]|$)' || true
     else
-      printf "%b\n" "$NTP_DIRECTIVES"
+      printf "%b\n" "$NTP_DIRECTIVES" | tr ',' '\n'
     fi
   fi
 
