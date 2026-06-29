@@ -94,7 +94,11 @@ fi
   echo "makestep 0.1 3"
 
   if [ -n "${NTP_DIRECTIVES:-}" ]; then
-    printf "%b\n" "$NTP_DIRECTIVES"
+    if [ "${NOCLIENTLOG:-false}" = true ]; then
+      printf "%b\n" "$NTP_DIRECTIVES" | grep -vE '^[[:space:]]*ratelimit([[:space:]]|$)' || true
+    else
+      printf "%b\n" "$NTP_DIRECTIVES"
+    fi
   fi
 
   if [ "${NOCLIENTLOG:-false}" = true ]; then
