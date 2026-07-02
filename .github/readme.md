@@ -21,7 +21,7 @@ Docker container of [chrony](https://chrony-project.org/), a versatile implement
 
 ## Usage  🐳
 
-##### Via Docker Compose:
+##### Docker Compose:
 
 ```yaml
 services:
@@ -35,7 +35,7 @@ services:
     restart: always
 ```
 
-##### Via Docker CLI:
+##### Docker CLI:
 
 ```bash
 docker run -it --rm --name chrony -p 123:123/udp docker.io/dockurr/chrony
