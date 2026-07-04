@@ -4,6 +4,29 @@ set -eu
 CHRONY_CONF_FILE="/etc/chrony/chrony.conf"
 DEFAULT_NTP="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 
+warn() {
+  echo "Warning: $*" >&2
+}
+
+error() {
+  echo "ERROR: $*" >&2
+}
+
+is_ipv4_literal() {
+  [[ "$1" =~ ^[0-9]+(\.[0-9]+){3}$ ]]
+}
+
+is_ipv6_literal() {
+  [[ "$1" == *:* ]]
+}
+
+is_enabled() {
+  case "${1:-}" in
+    Y|y|YES|Yes|yes|TRUE|True|true|1|ON|On|on) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 # Confirm correct permissions on chrony run directory
 if [ -d /run/chrony ]; then
   chown -R chrony:chrony /run/chrony
@@ -21,6 +44,12 @@ fi
 rm -f "$CHRONY_CONF_FILE"
 touch "$CHRONY_CONF_FILE"
 chown chrony:chrony "$CHRONY_CONF_FILE"
+
+# Determine whether IPv6 is available before generating the config
+ipv6_disabled=false
+if [ ! -f /proc/net/if_inet6 ] || [ "$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6 2>/dev/null || echo 0)" = "1" ]; then
+  ipv6_disabled=true
+fi
 
 # Dynamically populate chrony config file.
 {
@@ -48,43 +77,69 @@ else
   esac
 fi
 
+time_sources=0
+servers_file="$(mktemp)"
+
+printf "%s\n" "$NTP_SERVERS" | tr ',' '\n' > "$servers_file"
+
 # Add NTP servers
-{
-  printf "%s\n" "$NTP_SERVERS" | tr ',' '\n' | while IFS= read -r N; do
+while IFS= read -r N; do
 
-    # Strip quotes and surrounding whitespace from ntp server
-    N_CLEANED=$(
-      printf "%s" "$N" |
-        tr -d '"' |
-        sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
-    )
+  # Strip surrounding whitespace from ntp server
+  N_CLEANED=$(
+    printf "%s" "$N" |
+      sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+  )
 
-    # Skip empty entries
-    [ -z "$N_CLEANED" ] && continue
+  # Strip one surrounding pair of double quotes
+  if [[ "$N_CLEANED" == \"*\" ]]; then
+    N_CLEANED="${N_CLEANED#\"}"
+    N_CLEANED="${N_CLEANED%\"}"
+  fi
 
-    # Check if ntp server has a 127.0.0.0/8 address indicating it's
-    # the local system clock
-    case "$N_CLEANED" in
-      127.*)
+  # Skip empty entries
+  [ -z "$N_CLEANED" ] && continue
+
+  # Skip IPv6 addresses when chrony will be started in IPv4-only mode
+  if [ "$ipv6_disabled" = true ] && is_ipv6_literal "$N_CLEANED"; then
+    warn "Skipping IPv6 NTP server because IPv6 is disabled: $N_CLEANED"
+    continue
+  fi
+
+  # Check if ntp server has a 127.0.0.0/8 address indicating it's
+  # the local system clock
+  case "$N_CLEANED" in
+    127.*)
+      {
         echo "server $N_CLEANED"
         echo "local stratum 10"
-        ;;
+      } >> "$CHRONY_CONF_FILE"
+      time_sources=$((time_sources + 1))
+      ;;
 
-      *)
-        if [ "${ENABLE_NTS:-false}" = true ]; then
-          echo "server $N_CLEANED iburst nts"
-        else
-          echo "server $N_CLEANED iburst"
-        fi
-        ;;
-    esac
+    *)
+      if is_enabled "${ENABLE_NTS:-false}" && ! is_ipv4_literal "$N_CLEANED" && ! is_ipv6_literal "$N_CLEANED"; then
+        echo "server $N_CLEANED iburst nts" >> "$CHRONY_CONF_FILE"
+      else
+        echo "server $N_CLEANED iburst" >> "$CHRONY_CONF_FILE"
+      fi
+      time_sources=$((time_sources + 1))
+      ;;
+  esac
 
-  done
-} >> "$CHRONY_CONF_FILE"
+done < "$servers_file"
+
+rm -f "$servers_file"
 
 # PTP0 configuration: if it has been passed through, it means we want to use it
 if [ -e /dev/ptp0 ]; then
   echo "refclock PHC /dev/ptp0 poll 3 dpoll -2 stratum 2" >> "$CHRONY_CONF_FILE"
+  time_sources=$((time_sources + 1))
+fi
+
+if [ "$time_sources" -eq 0 ]; then
+  error "No usable NTP, local clock, or PTP time source was configured."
+  exit 1
 fi
 
 # Final bits for the config file
@@ -94,15 +149,26 @@ fi
   echo "makestep 0.1 3"
 
   if [ -n "${NTP_DIRECTIVES:-}" ]; then
-    if [ "${NOCLIENTLOG:-false}" = true ]; then
-      printf "%b\n" "$NTP_DIRECTIVES" | tr ',' '\n' |
-        grep -vE '^[[:space:]]*ratelimit([[:space:]]|$)' || true
-    else
-      printf "%b\n" "$NTP_DIRECTIVES" | tr ',' '\n'
+    directives="$(printf "%b" "$NTP_DIRECTIVES")"
+
+    # Accept comma-separated directives only when no newline-style directives are used.
+    # This avoids breaking directives that contain commas when users provide newline-separated input.
+    if [ "$(printf "%s" "$directives" | wc -l)" -eq 0 ]; then
+      directives="$(printf "%s" "$directives" | tr ',' '\n')"
     fi
+
+    printf "%s\n" "$directives" | while IFS= read -r line; do
+      [ -z "$line" ] && continue
+
+      if is_enabled "${NOCLIENTLOG:-false}" && [[ "$line" =~ ^[[:space:]]*ratelimit([[:space:]]|$) ]]; then
+        continue
+      fi
+
+      echo "$line"
+    done
   fi
 
-  if [ "${NOCLIENTLOG:-false}" = true ]; then
+  if is_enabled "${NOCLIENTLOG:-false}"; then
     echo "noclientlog"
   fi
 
@@ -118,11 +184,11 @@ args=(
 )
 
 # Enable control of system clock, disabled by default
-if [ "${ENABLE_SYSCLK:-false}" != true ]; then
+if ! is_enabled "${ENABLE_SYSCLK:-false}"; then
   args+=(-x)
 fi
 
-if [ ! -f /proc/net/if_inet6 ] || [ "$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6 2>/dev/null || echo 0)" = "1" ]; then
+if [ "$ipv6_disabled" = true ]; then
   args+=(-4)
 fi
 
