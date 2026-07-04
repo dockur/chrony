@@ -3,17 +3,25 @@
 FROM alpine:edge
 
 # Install chrony
-RUN set -eu && \
-    apk update && \
-    apk upgrade && \
-    apk add --no-cache \
-      chrony-nts \
-      bash \
-      tzdata && \
-    { getent group chrony >/dev/null || addgroup -S chrony; } && \
-    { id -u chrony >/dev/null 2>&1 || adduser -S chrony -G chrony; } && \
-    rm -f /etc/chrony/chrony.conf && \
-    rm -rf /tmp/* /var/cache/apk/*
+RUN <<EOF
+  set -eu
+
+  apk update
+  apk upgrade
+  apk add --no-cache \
+    chrony-nts \
+    bash \
+    tzdata
+
+  # Create chrony user and group
+  { getent group chrony >/dev/null || addgroup -S chrony; }
+  { id -u chrony >/dev/null 2>&1 || adduser -S chrony -G chrony; }
+
+  # Remove default Chrony config
+  rm -f /etc/chrony/chrony.conf
+
+  rm -rf /tmp/* /var/cache/apk/*
+EOF
 
 # Script to configure/startup Chrony
 COPY --chmod=0755 entrypoint.sh /entrypoint.sh
