@@ -16,9 +16,12 @@ Docker container of [chrony](https://chrony-project.org/), a versatile implement
 
 ## Features ✨
 
-  - Synchronise the system clock with NTP servers, reference clocks (e.g. GPS receiver), and manual input using wristwatch and keyboard.
-  - Operate as an NTPv4 (RFC 5905) server and peer to provide a time service to other computers in the network.
-  - Lightweight Alpine-based image
+- Provides a lightweight NTP server
+- Synchronizes time with upstream NTP servers
+- Allows network clients to sync their clocks
+- Supports configurable upstream time sources
+- Allows custom `chrony.conf` configuration
+- Lightweight Alpine-based image
 
 ## Usage  🐳
 
