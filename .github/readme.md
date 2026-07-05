@@ -1,6 +1,6 @@
 <h1 align="center">chronyd<br />
 <div align="center">
-<a href="https://github.com/dockur/chrony"><img src="https://raw.githubusercontent.com/dockur/chrony/master/.github/logo.jpg" title="Logo" style="max-width:100%;" width="128" /></a>
+<a href="https://github.com/dockur/chrony"><img src="https://raw.githubusercontent.com/dockur/chrony/master/.github/logo.jpg" title="Logo" style="max-width:100%;" width="96" /></a>
 </div>
 <div align="center">
   
@@ -140,7 +140,7 @@ Feel free to check out the project documentation for more information at:
 
  # Acknowledgements 🙏
  
-Special thanks to [@simonrupf](https://github.com/simonrupf) for creating the original project.
+Special thanks to [cturra](https://github.com/cturra) and [simonrupf](https://github.com/simonrupf) for creating the original project.
 
 ## Stars 🌟
 [![Stargazers](https://raw.githubusercontent.com/star-stats/stars/refs/heads/data/charts/dockur-chrony.svg)](https://github.com/dockur/chrony/stargazers)
