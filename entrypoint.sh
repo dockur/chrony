@@ -45,6 +45,8 @@ prepare_chrony_paths() {
   rm -f "$CHRONY_CONF_FILE"
   touch "$CHRONY_CONF_FILE"
   chown chrony:chrony "$CHRONY_CONF_FILE"
+
+  return 0
 }
 
 detect_ipv6() {
@@ -53,6 +55,8 @@ detect_ipv6() {
   if [ ! -f /proc/net/if_inet6 ] || [ "$(cat /proc/sys/net/ipv6/conf/all/disable_ipv6 2>/dev/null || echo 0)" = "1" ]; then
     ipv6_disabled=true
   fi
+
+  return 0
 }
 
 write_config_header() {
@@ -64,6 +68,8 @@ write_config_header() {
     echo
     echo "# Time servers provided by NTP_SERVERS environment variable."
   } >> "$CHRONY_CONF_FILE"
+
+  return 0
 }
 
 normalize_env() {
@@ -83,6 +89,8 @@ normalize_env() {
       *) LOG_LEVEL=0 ;;
     esac
   fi
+
+  return 0
 }
 
 clean_server_name() {
@@ -135,6 +143,8 @@ add_time_server() {
       time_sources=$((time_sources + 1))
       ;;
   esac
+
+  return 0
 }
 
 write_time_sources() {
@@ -165,6 +175,8 @@ write_time_sources() {
     error "No usable NTP, local clock, or PTP time source was configured."
     exit 1
   fi
+
+  return 0
 }
 
 write_custom_directives() {
@@ -191,6 +203,8 @@ write_custom_directives() {
 
     echo "$line"
   done
+
+  return 0
 }
 
 write_config_footer() {
@@ -209,6 +223,8 @@ write_config_footer() {
     echo
     echo "allow all"
   } >> "$CHRONY_CONF_FILE"
+
+  return 0
 }
 
 build_chronyd_args() {
@@ -227,6 +243,8 @@ build_chronyd_args() {
   if [ "$ipv6_disabled" = true ]; then
     args+=(-4)
   fi
+
+  return 0
 }
 
 prepare_chrony_paths
