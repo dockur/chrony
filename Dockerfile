@@ -36,7 +36,7 @@ ENV NTP_DIRECTIVES="ratelimit,rtcsync"
 VOLUME /etc/chrony /run/chrony /var/lib/chrony
 
 # Let Docker know how to test container health
-HEALTHCHECK CMD chronyc -n tracking || exit 1
+HEALTHCHECK CMD ["chronyc", "-n", "tracking"]
 
 # Start chronyd in the foreground
 ENTRYPOINT [ "/entrypoint.sh" ]
