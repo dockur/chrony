@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -eu
-test
+
 CHRONY_CONF_FILE="/etc/chrony/chrony.conf"
 DEFAULT_NTP="0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 
