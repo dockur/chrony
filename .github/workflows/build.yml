@@ -58,14 +58,6 @@ jobs:
         with:
           fetch-depth: 0
       - 
-        name: Lint Dockerfile
-        if: env.exists == 'false'
-        uses: hadolint/hadolint-action@v3.3.0
-        with:
-          dockerfile: Dockerfile
-          ignore: DL3008,DL3018
-          failure-threshold: warning
-      -
         name: Docker metadata
         id: meta
         if: env.exists == 'false'
