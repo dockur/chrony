@@ -221,7 +221,18 @@ write_config_footer() {
     fi
 
     echo
-    echo "allow all"
+    if [ -z "${ALLOW:-}" ]; then
+      echo "allow all"
+    else
+      while IFS= read -r subnet; do
+        subnet=$(
+          printf "%s" "$subnet" |
+            sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+        )
+        [ -z "$subnet" ] && continue
+        echo "allow $subnet"
+      done < <(printf "%s\n" "$ALLOW" | tr ',' '\n')
+    fi
   } >> "$CHRONY_CONF_FILE"
 
   return 0
