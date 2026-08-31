@@ -83,11 +83,24 @@ By default the UTC timezone is used, however if you'd like to adjust your NTP se
 local timezone, all you need to do is provide a `TZ` environment variable following the standard TZ data format:
 
 ```yaml
+...
+environment:
+  TZ: "America/Vancouver"
   ...
-  environment:
-    TZ: "America/Vancouver"
-    ...
 ```
+
+### Restrict client access 🔒
+
+By default, all clients are allowed to use the NTP server. To restrict access, set the `ALLOW` environment variable to a comma-separated list of subnets:
+
+```yaml
+...
+environment:
+  ALLOW: "192.168.1.0/24,10.0.0.0/8"
+  ...
+```
+
+If `ALLOW` is unset or empty, the default `allow all` directive is used.
 
 ## Enable Network Time Security 🛡️
 
